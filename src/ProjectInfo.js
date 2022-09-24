@@ -38,7 +38,7 @@ const ProjectInfo = (props) => {
                     </ul>
                 </div> 
                 
-                <div class="divider card-divider"></div>
+                <div className="divider card-divider"></div>
                 <div>
                     {props.projectData.description}
                 </div>  

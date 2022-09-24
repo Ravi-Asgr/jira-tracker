@@ -1,9 +1,44 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
+import { trackPromise } from 'react-promise-tracker';
+import { Spinner } from './spinner/spinner';
+
 
 const ProjectLead = (props) => {
+
+    const [leadDetails, setLeadDetails] = useState([]);
+    
+    const apiParam = {
+      method: 'GET', 
+      headers: new Headers({
+          'Authorization': 'Bearer MTY4OTQ1NTA1Njk3OkoXi4rU/OGcQYOJXXky5q1zr2lL' 
+      }) 
+    };
+    
+    
+    const fetchLead = () => {
+      trackPromise (
+        fetch('/rest/api/2/user?username='+props.projectData.displayName, apiParam)
+            
+            .then((response) => response.json())
+            .then(
+                (data) => {
+                    console.log(data);
+                    setLeadDetails(data);
+                },
+                (err) => {
+                    //setIsLoaded(true);
+                    //setError(error);
+                    console.log(err.message);
+                }
+            ), 
+      "lead")
+    }
+
+    useEffect(fetchLead, []);
+
+
     return (
         <div className="card revenue-card">
-
           <button className="card-menu-btn icon-box" aria-label="More" data-menu-btn>
             <span className="material-symbols-rounded  icon">more_horiz</span>
           </button>
@@ -30,38 +65,47 @@ const ProjectLead = (props) => {
 
           <p className="card-title">About Lead</p>
 
-          <data className="card-price" value="2100">{props.projectData.displayName}</data>
-
-          <figure class="card-avatar">
-            <img src={props.projectData.avatarUrls["16x16"]} alt="Project" width="48" height="48" />
-          </figure>
+          { Object.keys(leadDetails).length != 0 && (
+            <div className="profile-card-wrapper">
+              <figure className="card-avatar">
+                <img src={props.projectData.avatarUrls["16x16"]} alt="Project" width="48" height="48" />
+              </figure>
+              <div>
+                <p className="card-title">{props.projectData.displayName}</p>
+                <p className="card-subtitle">{leadDetails.emailAddress}</p>
+              </div> 
+            </div>
+          )}
+          
+          <Spinner area="lead"/>
 
           <div className="divider card-divider"></div>
-
+  
           <ul className="revenue-list">
 
             <li className="revenue-item icon-box">
 
               <span className="material-symbols-rounded  icon  green">trending_up</span>
+              { Object.keys(leadDetails).length != 0 && (
+                <div>
+                  <data className="revenue-item-data" value={leadDetails.applicationRoles.size}>{leadDetails.applicationRoles.size}</data>
 
-              <div>
-                <data className="revenue-item-data" value="15">15%</data>
-
-                <p className="revenue-item-text">Prev Week</p>
-              </div>
+                  <p className="revenue-item-text">App... Roles</p>
+                </div>
+              )}
 
             </li>
 
             <li className="revenue-item icon-box">
 
               <span className="material-symbols-rounded  icon  red">trending_down</span>
+              { Object.keys(leadDetails).length != 0 && (  
+                <div>
+                  <data className="revenue-item-data" value={leadDetails.groups.size}>{leadDetails.groups.size}</data>
 
-              <div>
-                <data className="revenue-item-data" value="10">10%</data>
-
-                <p className="revenue-item-text">Prev Month</p>
-              </div>
-
+                  <p className="revenue-item-text">Groups</p>
+                </div>
+              )}
             </li>
 
           </ul>

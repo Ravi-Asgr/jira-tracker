@@ -1,8 +1,28 @@
-import React from "react";
+import React, {  useState, useEffect, useRef } from "react";
 
-const Header = () => {
+const Header = (props) => {
+
+    const handleClick = (ele) => {
+      var elementPosition = ele.getBoundingClientRect().top;
+      //ele?.scrollIntoView({block: 'start', behavior: 'smooth'});
+      window.scrollTo({
+        //top: ele.offsetTop,
+        top: elementPosition + window.pageYOffset - height,
+        left: 0,
+        behavior: "smooth",
+      });
+      
+    };
+
+    const [height, setHeight] = useState(0)
+    const headerRef = useRef(null)
+    useEffect(() => {
+      setHeight(headerRef.current.clientHeight)
+    })
+
+
     return(
-        <header className="header" data-header>
+        <header className="header data-header" ref={headerRef}>
         <div className="container">
     
           <h1>
@@ -19,26 +39,26 @@ const Header = () => {
               <ul className="navbar-list">
     
                 <li>
-                  <a href="#" className="navbar-link active icon-box">
+                  <a href="/" className="navbar-link active icon-box">
                     <span className="material-symbols-rounded  icon">grid_view</span>
     
                     <span>Home</span>
                   </a>
                 </li>
     
-                <li>
-                  <a href="#" className="navbar-link icon-box">
+                <li onClick={() => handleClick(props.projectLink.current)}>
+                  <a className="navbar-link icon-box">
                     <span className="material-symbols-rounded  icon">folder</span>
     
-                    <span>Projects</span>
+                    <span>Project Info</span>
                   </a>
                 </li>
     
-                <li>
-                  <a href="#" className="navbar-link icon-box">
+                <li onClick={() => handleClick(props.boardLink.current)}>
+                  <a className="navbar-link icon-box">
                     <span className="material-symbols-rounded  icon">list</span>
     
-                    <span>Tasks</span>
+                    <span>Boards</span>
                   </a>
                 </li>
     
